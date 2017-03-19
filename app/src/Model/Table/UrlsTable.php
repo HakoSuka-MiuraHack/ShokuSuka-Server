@@ -7,8 +7,8 @@
  */
 
 namespace App\Model\Table;
+use Cake\ORM\Table;
 
-
-class Urls {
+class UrlsTable extends Table{
 
 }

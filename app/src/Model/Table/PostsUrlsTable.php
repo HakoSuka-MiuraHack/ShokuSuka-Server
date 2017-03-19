@@ -7,8 +7,9 @@
  */
 
 namespace App\Model\Table;
+use Cake\ORM\Table;
 
 
-class PostsUrlsTable {
+class PostsUrlsTable extends Table{
 
 }
