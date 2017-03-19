@@ -1,0 +1,18 @@
+version: '2'
+services:
+        db:
+                image: mysql
+                environment:
+                        - MYSQL_ROOT_PASSWORD=secret
+                        - MYSQL_DATABASE=cakephp
+                        - MYSQL_USER=cakephp
+                        - MYSQL_PASSWORD=secret
+        web:
+                build: .
+                command: app/bin/cake server -H 0.0.0.0
+                volumes:
+                        - .:/code
+                ports:
+                        - "8765:8765"
+                depends_on:
+                        - db
