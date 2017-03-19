@@ -7,8 +7,7 @@
  */
 
 namespace App\Model\Table;
+use Cake\ORM\Table;
 
-
-class Users {
-
+class UsersTable extends Table{
 }

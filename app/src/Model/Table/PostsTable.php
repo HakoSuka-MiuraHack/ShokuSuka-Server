@@ -2,5 +2,5 @@
 namespace App\Model\Table;
 use Cake\ORM\Table;
 
-class PostsTable extends AppTable{
+class PostsTable extends Table{
 }
