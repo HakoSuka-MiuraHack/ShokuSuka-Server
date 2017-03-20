@@ -45,9 +45,17 @@ class PostsController extends AppController{
             );
         }
 
+        $ret = array(
+            "errors" => array(
+                "message" => "Not Found",
+                "code" => 404
+            ),
+            "data" => $activities,
+        );
+
         $this->response->charset('UTF-8');
         $this->response->type('json');
-        echo json_encode($activities, JSON_UNESCAPED_UNICODE);
+        echo json_encode($ret, JSON_UNESCAPED_UNICODE);
     }
   /*
   * Posts(投稿)にgetアクセスがあった場合呼ばれる
