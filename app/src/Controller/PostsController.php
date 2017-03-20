@@ -8,7 +8,11 @@ class PostsController extends AppController{
         $activities = array();
 
         $postsTable = TableRegistry::get('Posts');
-        $posts = $postsTable->find('all');
+        $posts = $postsTable->find('all')
+                            ->order([
+                                'Posts.create_date' => 'DESC'
+                            ])
+                            ->limit(5);
 
         $urlsTable = TableRegistry::get('Urls');
         $usersTable = TableRegistry::get('Users');
