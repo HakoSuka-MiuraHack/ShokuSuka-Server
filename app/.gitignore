@@ -1,1 +1,6 @@
+/vendor/*
+/config/app.php
+/tmp/*
+/logs/*
+app/vendor/*
 

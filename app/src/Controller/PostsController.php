@@ -37,6 +37,7 @@ class PostsController extends AppController{
    }*/
 
    public function postActivity(){
+       mb_internal_encoding("UTF-8");
        $this->autoRender = false;
        /*
        post params
@@ -45,18 +46,30 @@ class PostsController extends AppController{
        user_name:facebook上の名前
        latitude:緯度
        longitude:経度
+       image_urls:全ての画像URL
        */
+
        $msg = $this->request->data('post_message');
        $facebookId = $this->request->data('facebook_id');
        $userName = $this->request->data('user_name');
        $latitude = $this->request->data('latitude');
        $longitude = $this->request->data('longitude');
+       $urls = $this->request->data('image_urls');
 
+       /*
+       $msg = "testtest";
+       $facebookId = "hogehogefacebook";
+       $userName = "HOGE";
+       $latitude = 42.12435;
+       $longitude = 135.85936;
+       $urls = array("img1", "img2", "img3");
+       */
        debug($msg);
        debug($facebookId);
        debug($userName);
        debug($latitude);
        debug($longitude);
+       debug($urls);
 
        $userId = $this->checkUser($facebookId, $userName);
 
@@ -68,13 +81,28 @@ class PostsController extends AppController{
        $post->post_message = $msg;
        $post->user_id = $userId;
        $post->restaurant_id = $restId;
+       date_default_timezone_set('Asia/Tokyo');
+       $post->create_date = date('Y/m/d H:i');
+       debug($post->create_date);
+       $postId;
 
        if ($postTable->save($post)) {
            // $article エンティティは今や id を持っています
-           $id = $post->id;
-           debug($id);
+           $postId = $post->id;
+           debug($postId);
        }
-       $this->autoRender = false;
+
+       $urlIds = $this->insertUrls($urls);
+
+       $postsUrlsTable = TableRegistry::get('PostsUrls');
+       foreach ($urlIds as $urlId) {
+           $postUrl = $postsUrlsTable->newEntity();
+           $postUrl->post_id = $postId;
+           $postUrl->url_id = $urlId;
+           if($postsUrlsTable->save($postUrl)){
+               //保存に成功した場合
+           }
+       }
    }
 
    public function checkUser($facebookId, $userName){
@@ -127,6 +155,24 @@ class PostsController extends AppController{
            debug($id);
            return $id;
        }
+   }
+
+   public function insertUrls($urls){
+       $urlsTable = TableRegistry::get('Urls');
+       $urlIdsArray = array();
+       foreach ($urls as $url) {
+           $oneUrl = $urlsTable->newEntity();
+           $oneUrl->image_url = $url;
+           if($urlsTable->save($oneUrl)){
+               $id = $oneUrl->id;
+               $urlIdsArray[] = $id;
+           }
+       }
+       return $urlIdsArray;
+   }
+
+   public function messageDecode($msg){
+       return mb_convert_encoding($msg,"UTF-8");
    }
    /*
    protected function queryVaridate(array $query){
