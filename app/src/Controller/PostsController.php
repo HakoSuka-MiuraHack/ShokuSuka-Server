@@ -164,7 +164,7 @@ class PostsController extends AppController{
        $user = $usersTable->newEntity();
        $user->facebook_id = $facebookId;
        $user->user_name = $userName;
-       $user->post_count = 0;
+       $user->post_count = 1;
 
        if ($usersTable->save($user)) {
            // $article エンティティは今や id を持っています
