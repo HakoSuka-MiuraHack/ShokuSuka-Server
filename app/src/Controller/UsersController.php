@@ -24,4 +24,28 @@ class UsersController extends AppController {
             $result = $post->save($entity);
         }
     }
+
+    public function getRanking(){
+        $this->autoRender = false;
+        $faceId = $this->request->data("facebook_id");
+
+        $usersTable = TableRegistry::get("Users");
+        $users = $usersTable->find("all")->order([
+            "Users.post_count" => "DESC"
+        ]);
+        $rank =1;
+        foreach ($users as $user){
+            if($user->facebook_id === $faceId){
+                $return = array("rank"=>$rank,"count"=>$user->post_count);
+
+                $this->response->charset('UTF-8');
+                $this->response->type('json');
+                echo json_encode($return, JSON_UNESCAPED_UNICODE);
+
+            }
+            $rank++;
+        }
+
+
+    }
 }

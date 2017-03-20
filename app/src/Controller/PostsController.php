@@ -37,6 +37,7 @@ class PostsController extends AppController{
    }*/
 
    public function postActivity(){
+       mb_internal_encoding("UTF-8");
        $this->autoRender = false;
        /*
        post params
@@ -77,13 +78,13 @@ class PostsController extends AppController{
        $postTable = TableRegistry::get('Posts');
        $post = $postTable->newEntity();
 
-       $post->post_message = $msg;
+       $post->post_message = $this->messageDecode($msg);
        $post->user_id = $userId;
        $post->restaurant_id = $restId;
        date_default_timezone_set('Asia/Tokyo');
        $post->create_date = date('Y/m/d H:i');
        debug($post->create_date);
-       $postId;
+       $postId = null;
 
        if ($postTable->save($post)) {
            // $article エンティティは今や id を持っています
@@ -168,6 +169,10 @@ class PostsController extends AppController{
            }
        }
        return $urlIdsArray;
+   }
+
+   public function messageDecode($msg){
+       return mb_convert_encoding($msg,"UTF-8");
    }
    /*
    protected function queryVaridate(array $query){
