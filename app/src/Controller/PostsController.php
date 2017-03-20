@@ -78,13 +78,13 @@ class PostsController extends AppController{
        $postTable = TableRegistry::get('Posts');
        $post = $postTable->newEntity();
 
-       $post->post_message = $this->messageDecode($msg);
+       $post->post_message = $msg;
        $post->user_id = $userId;
        $post->restaurant_id = $restId;
        date_default_timezone_set('Asia/Tokyo');
        $post->create_date = date('Y/m/d H:i');
        debug($post->create_date);
-       $postId = null;
+       $postId;
 
        if ($postTable->save($post)) {
            // $article エンティティは今や id を持っています
