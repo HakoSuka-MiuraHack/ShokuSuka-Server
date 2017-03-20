@@ -16,6 +16,7 @@ namespace App\Controller;
 
 use Cake\Controller\Controller;
 use Cake\Event\Event;
+use Cake\ORM\TableRegistry;
 
 /**
  * Application Controller
@@ -65,5 +66,17 @@ class AppController extends Controller
         ) {
             $this->set('_serialize', true);
         }
+    }
+
+    public function post(){
+        $params = $this->queryVaridate($this->request->getQuery());//クエリパラメータ取得
+
+        $post = TableRegistry::get("PostUrl");
+        $entity = $post->patchEntity($post->newEntity(), $params);// エンティティを作成してバリデートしたクエリパラメータをセット
+        $result = $post->save($entity);
+    }
+
+    protected function queryVaridate(array $query){
+        return $query;
     }
 }
