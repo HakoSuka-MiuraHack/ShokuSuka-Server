@@ -3,6 +3,52 @@ namespace App\Controller;
 use Cake\ORM\TableRegistry;
 
 class PostsController extends AppController{
+    public function getActivity(){
+        $this->autoRender = false;
+        $activities = array();
+
+        $postsTable = TableRegistry::get('Posts');
+        $posts = $postsTable->find('all')
+                            ->order([
+                                'Posts.create_date' => 'DESC'
+                            ])
+                            ->limit(5);
+
+        $urlsTable = TableRegistry::get('Urls');
+        $usersTable = TableRegistry::get('Users');
+
+        foreach ($posts as $post) {
+            $query = $urlsTable->find()
+                           ->join([
+                               'table' => 'posts_urls',
+                               'alias' => 'pu',
+                               'conditions' => 'pu.url_id = Urls.id'
+                           ])
+                           ->select([
+                               "image_url" => "Urls.image_url"
+                           ])
+                           ->where([
+                               'pu.post_id =' => $post->id
+                           ]);
+            $urls = $query;
+
+            $user = $usersTable->get($post->user_id);
+            $facebookId = $user->facebook_id;
+            $name = $user->user_name;
+
+            $activities[] = array(
+                'message' => $post->post_message,
+                'name' => $name,
+                'facebookId' => $facebookId,
+                'urls' => $urls,
+                'createDate' => $post->create_date
+            );
+        }
+
+        $this->response->charset('UTF-8');
+        $this->response->type('json');
+        echo json_encode($activities, JSON_UNESCAPED_UNICODE);
+    }
   /*
   * Posts(投稿)にgetアクセスがあった場合呼ばれる
    *
@@ -119,7 +165,7 @@ class PostsController extends AppController{
        $user = $usersTable->newEntity();
        $user->facebook_id = $facebookId;
        $user->user_name = $userName;
-       $user->post_count = 0;
+       $user->post_count = 1;
 
        if ($usersTable->save($user)) {
            // $article エンティティは今や id を持っています
