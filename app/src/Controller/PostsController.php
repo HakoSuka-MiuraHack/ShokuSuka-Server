@@ -47,22 +47,22 @@ class PostsController extends AppController{
        longitude:経度
        image_urls:全ての画像URL
        */
-       
+
+       /*
        $msg = $this->request->data('post_message');
        $facebookId = $this->request->data('facebook_id');
        $userName = $this->request->data('user_name');
        $latitude = $this->request->data('latitude');
        $longitude = $this->request->data('longitude');
        $urls = $this->request->data('image_urls');
+       */
 
-       /*
        $msg = "testtest";
        $facebookId = "hogehogefacebook";
        $userName = "HOGE";
        $latitude = 42.12435;
        $longitude = 135.85936;
        $urls = array("img1", "img2", "img3");
-       */
 
        debug($msg);
        debug($facebookId);
@@ -81,6 +81,9 @@ class PostsController extends AppController{
        $post->post_message = $msg;
        $post->user_id = $userId;
        $post->restaurant_id = $restId;
+       date_default_timezone_set('Asia/Tokyo');
+       $post->create_date = date('Y/m/d H:i');
+       debug($post->create_date);
        $postId;
 
        if ($postTable->save($post)) {
